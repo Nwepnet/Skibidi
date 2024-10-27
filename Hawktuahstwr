@@ -1,0 +1,72 @@
+local localPlayer = game:GetService("Players").LocalPlayer
+local localCharacter = localPlayer.Character or localPlayer.CharacterAdded:Wait()
+
+-- Define a table of colors to cycle through: White, Black, Grey
+local colors = {
+    Color3.fromRGB(255, 255, 255),  -- White (RGB: 255, 255, 255)
+    Color3.fromRGB(0, 0, 0),          -- Black (RGB: 0, 0, 0)
+    Color3.fromRGB(128, 128, 128),    -- Grey (RGB: 128, 128, 128)
+}
+
+local function triggerParticleEffect()
+    for _, part in pairs(localCharacter:GetChildren()) do
+        if part:IsA("BasePart") then
+            local attach = Instance.new("Attachment")
+            local particles = Instance.new("ParticleEmitter")
+
+            attach.Name = "TOKYOISSOKIDI"
+            attach.Parent = part
+
+            particles.Brightness = 5
+            particles.Drag = 3
+            particles.FlipbookLayout = Enum.ParticleFlipbookLayout.Grid4x4
+            particles.FlipbookMode = Enum.ParticleFlipbookMode.OneShot
+            particles.Lifetime = NumberRange.new(0.5) -- Adjusted to keep particles alive longer
+            particles.LightEmission = -1
+            particles.LockedToPart = true
+            particles.Rate = 2.5
+            particles.Size = NumberSequence.new({
+                NumberSequenceKeypoint.new(0, 2),
+                NumberSequenceKeypoint.new(1, 2)
+            })
+            particles.Speed = NumberRange.new(0)
+            particles.Texture = "http://www.roblox.com/asset/?id=14904853757"
+
+            -- Change transparency to keep particles visible
+            particles.Transparency = NumberSequence.new({
+                NumberSequenceKeypoint.new(0, 0),  -- Start fully opaque
+                NumberSequenceKeypoint.new(1, 0)   -- End fully opaque
+            })
+            
+            particles.ZOffset = -1
+
+            -- Create ColorSequence from the colors table
+            local colorSequence = {}
+            for i, color in ipairs(colors) do
+                table.insert(colorSequence, ColorSequenceKeypoint.new((i-1) / (#colors - 1), color))
+            end
+
+            particles.Color = ColorSequence.new(colorSequence)
+            particles.Parent = attach
+        end
+    end
+end
+
+triggerParticleEffect()
+game.Players.LocalPlayer.Character.Stand.FakeHead:Destroy()
+game.Players.LocalPlayer.Character.Stand.FakeRightArm:Destroy()
+game.Players.LocalPlayer.Character.Stand.FakeLeftArm:Destroy()
+game.Players.LocalPlayer.Character.Stand.FakeTorso:Destroy()
+local args = {
+    [1] = "Alternate",
+    [2] = "STWRTZ",
+    [3] = true
+}game:GetService("ReplicatedStorage").Main.Input:FireServer(unpack(args))
+
+local args = {
+    [1] = "Alternate",
+    [2] = "Block",
+    [3] = true
+}
+
+game:GetService("ReplicatedStorage").Main.Input:FireServer(unpack(args))
