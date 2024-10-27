@@ -70,3 +70,5 @@ local args = {
 }
 
 game:GetService("ReplicatedStorage").Main.Input:FireServer(unpack(args))
+end
+end
