@@ -1,42 +1,5 @@
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Gokou300/Gokou300/main/Kyra%20Gojo%20Tsb%20Bypassed"))()
 
-local fx7 = game.ReplicatedStorage.Resources.FiveSeasonsFX["CharFX"].ArmFX:Clone()
-fx7.Parent = game.Players.LocalPlayer.Character["Left Arm"]
-for _, child in ipairs(fx7:GetChildren()) do
-    if child:IsA("ParticleEmitter") then
-        child.Color = ColorSequence.new(Color3.fromRGB(0, 255, 255)) -- Set color to cyan
-        child:Emit(2) -- Emit 2 particles
-    end
-end
-
-task.wait(0.1)
-
-local fx7 = game.ReplicatedStorage.Resources.FiveSeasonsFX["CharFX"].ArmFX:Clone()
-fx7.Parent = game.Players.LocalPlayer.Character["Right Arm"]
-for _, child in ipairs(fx7:GetChildren()) do
-    if child:IsA("ParticleEmitter") then
-        child.Color = ColorSequence.new(Color3.fromRGB(0, 255, 255)) -- Set color to cyan
-        child:Emit(2) -- Emit 2 particles
-    end
-end
-
-local fx7 = game.ReplicatedStorage.Resources.FiveSeasonsFX["CharFX"].ArmFX:Clone()
-fx7.Parent = game.Players.LocalPlayer.Character["Right Arm"]
-for _, child in ipairs(fx7:GetChildren()) do
-    if child:IsA("ParticleEmitter") then
-        child.Color = ColorSequence.new(Color3.fromRGB(0, 255, 255)) -- Set color to cyan
-        child:Emit(1) -- Emit 1 particle
-    end
-end
-
-task.wait(0.1)
-
-local fx7 = game.ReplicatedStorage.Resources.FiveSeasonsFX["CharFX"].ArmFX:Clone()
-fx7.Parent = game.Players.LocalPlayer.Character["Left Arm"]
-for _, child in ipairs(fx7:GetChildren()) do
-    if child:IsA("ParticleEmitter") then
-        child.Color = ColorSequence.new(Color3.fromRGB(0, 255, 255)) -- Set color to cyan
-        child:Emit(1) -- Emit 1 particle
 local localPlayer = game:GetService("Players").LocalPlayer
 local localCharacter = localPlayer.Character or localPlayer.CharacterAdded:Wait()
 
@@ -51,7 +14,6 @@ local function triggerParticleEffect()
 
             particles.Brightness = 5
             particles.Color = ColorSequence.new({
-                -- Set start and end color to cyan (RGB: 0, 255, 255)
                 ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 255, 255)),
                 ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 255, 255))
             })
@@ -82,7 +44,6 @@ local function triggerParticleEffect()
 end
 
 triggerParticleEffect()
-end
 
 -- Script 1
 local tool = Instance.new("Tool")
@@ -125,26 +86,18 @@ local function onEquipped()
         local effect = game:GetObjects("rbxassetid://" .. assetId)[1]
         local effectSoundId = "rbxassetid://6667923288" -- Replace with the actual ID of the sound you want to play
 
-        local effectSound = Instance.new("Sound") -- Create a new Sound instance
-        effectSound.SoundId = effectSoundId -- Set the SoundId property to the asset ID
-        effectSound.Parent = game.Workspace -- Parent it to Workspace or any other service
-        effectSound:Play() -- Play the sound
+        local effectSound = Instance.new("Sound")
+        effectSound.SoundId = effectSoundId
+        effectSound.Parent = game.Workspace
+        effectSound:Play()
 
         if effect then
-            -- Attach to the player's torso (you can change this to any other part, like "Head" or "HumanoidRootPart")
-            local torso = character:FindFirstChild("Torso") or character:FindFirstChild("UpperTorso") -- Depending on R6 or R15
+            local torso = character:FindFirstChild("Torso") or character:FindFirstChild("UpperTorso")
 
             if torso then
-                -- Parent the effect to the torso
                 effect.Parent = torso
-
-                -- Adjust the position to be closer
-                effect.CFrame = torso.CFrame * CFrame.new(0, 32, -1) -- Change the last value to move the effect closer or further away (negative value moves it closer)
-
-                -- Wait for 60 seconds
+                effect.CFrame = torso.CFrame * CFrame.new(0, 32, -1)
                 wait(60)
-
-                -- Destroy the effect
                 effect:Destroy()
             end
         end
