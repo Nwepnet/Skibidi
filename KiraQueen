@@ -1,4 +1,5 @@
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Gokou300/Gokou300/main/Kyra%20Gojo%20Tsb%20Bypassed"))()
+
 local fx7 = game.ReplicatedStorage.Resources.FiveSeasonsFX["CharFX"].ArmFX:Clone()
 fx7.Parent = game.Players.LocalPlayer.Character["Left Arm"]
 for _, child in ipairs(fx7:GetChildren()) do
@@ -81,6 +82,8 @@ local function triggerParticleEffect()
 end
 
 triggerParticleEffect()
+end
+
 -- Script 1
 local tool = Instance.new("Tool")
 tool.Name = "Infinite void" -- Put your tool name here
@@ -149,3 +152,4 @@ local function onEquipped()
 end
 
 tool.Equipped:Connect(onEquipped)
+end
