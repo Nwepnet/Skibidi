@@ -1,0 +1,151 @@
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Gokou300/Gokou300/main/Kyra%20Gojo%20Tsb%20Bypassed"))()
+local fx7 = game.ReplicatedStorage.Resources.FiveSeasonsFX["CharFX"].ArmFX:Clone()
+fx7.Parent = game.Players.LocalPlayer.Character["Left Arm"]
+for _, child in ipairs(fx7:GetChildren()) do
+    if child:IsA("ParticleEmitter") then
+        child.Color = ColorSequence.new(Color3.fromRGB(0, 255, 255)) -- Set color to cyan
+        child:Emit(2) -- Emit 2 particles
+    end
+end
+
+task.wait(0.1)
+
+local fx7 = game.ReplicatedStorage.Resources.FiveSeasonsFX["CharFX"].ArmFX:Clone()
+fx7.Parent = game.Players.LocalPlayer.Character["Right Arm"]
+for _, child in ipairs(fx7:GetChildren()) do
+    if child:IsA("ParticleEmitter") then
+        child.Color = ColorSequence.new(Color3.fromRGB(0, 255, 255)) -- Set color to cyan
+        child:Emit(2) -- Emit 2 particles
+    end
+end
+
+local fx7 = game.ReplicatedStorage.Resources.FiveSeasonsFX["CharFX"].ArmFX:Clone()
+fx7.Parent = game.Players.LocalPlayer.Character["Right Arm"]
+for _, child in ipairs(fx7:GetChildren()) do
+    if child:IsA("ParticleEmitter") then
+        child.Color = ColorSequence.new(Color3.fromRGB(0, 255, 255)) -- Set color to cyan
+        child:Emit(1) -- Emit 1 particle
+    end
+end
+
+task.wait(0.1)
+
+local fx7 = game.ReplicatedStorage.Resources.FiveSeasonsFX["CharFX"].ArmFX:Clone()
+fx7.Parent = game.Players.LocalPlayer.Character["Left Arm"]
+for _, child in ipairs(fx7:GetChildren()) do
+    if child:IsA("ParticleEmitter") then
+        child.Color = ColorSequence.new(Color3.fromRGB(0, 255, 255)) -- Set color to cyan
+        child:Emit(1) -- Emit 1 particle
+local localPlayer = game:GetService("Players").LocalPlayer
+local localCharacter = localPlayer.Character or localPlayer.CharacterAdded:Wait()
+
+local function triggerParticleEffect()
+    for _, part in pairs(localCharacter:GetChildren()) do
+        if part:IsA("BasePart") then
+            local attach = Instance.new("Attachment")
+            local particles = Instance.new("ParticleEmitter")
+
+            attach.Name = "TOKYOISSOKIDI"
+            attach.Parent = part
+
+            particles.Brightness = 5
+            particles.Color = ColorSequence.new({
+                -- Set start and end color to cyan (RGB: 0, 255, 255)
+                ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 255, 255)),
+                ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 255, 255))
+            })
+            particles.Drag = 3
+            particles.FlipbookLayout = Enum.ParticleFlipbookLayout.Grid4x4
+            particles.FlipbookMode = Enum.ParticleFlipbookMode.OneShot
+            particles.Lifetime = NumberRange.new(0.5)
+            particles.LightEmission = -1
+            particles.LockedToPart = true
+            particles.Rate = 2.5
+            particles.Size = NumberSequence.new({
+                NumberSequenceKeypoint.new(0, 2),
+                NumberSequenceKeypoint.new(1, 2)
+            })
+            particles.Speed = NumberRange.new(0)
+            particles.Texture = "http://www.roblox.com/asset/?id=14904853757"
+            particles.Transparency = NumberSequence.new({
+                NumberSequenceKeypoint.new(0, 1),
+                NumberSequenceKeypoint.new(0.2, 0.49),
+                NumberSequenceKeypoint.new(0.5, 0.51),
+                NumberSequenceKeypoint.new(0.8, 0.49),
+                NumberSequenceKeypoint.new(1, 1)
+            })
+            particles.ZOffset = -1
+            particles.Parent = attach
+        end
+    end
+end
+
+triggerParticleEffect()
+-- Script 1
+local tool = Instance.new("Tool")
+tool.Name = "Infinite void" -- Put your tool name here
+
+local handle = Instance.new("Part")
+handle.Name = "Handle"
+handle.Transparency = 1
+handle.CanCollide = false
+handle.Parent = tool
+
+local soundId = "rbxassetid://your_sound_id_here" -- Put a sound here (needs to be a sound by tsb)
+local sound = Instance.new("Sound")
+sound.SoundId = soundId
+sound.Parent = tool
+
+local animationId = "rbxassetid://15957361339" -- Put your tool animation here
+
+local function onEquipped()
+    local character = game.Players.LocalPlayer.Character
+    if character then
+        local humanoid = character:WaitForChild("Humanoid")
+        local rootPart = character:WaitForChild("HumanoidRootPart")
+
+        rootPart.Anchored = false -- Change to false if you do not want it to anchor
+
+        local animation = Instance.new("Animation")
+        animation.AnimationId = animationId
+        local animationTrack = humanoid:LoadAnimation(animation)
+        animationTrack:Play() -- Plays the animation
+        animationTrack:AdjustSpeed(1) -- Set your speed here
+
+        sound:Play() -- Plays the sound
+        tool.Unequipped:Connect(function()
+            print("Infinite Void.")
+        end)
+
+        -- Script 2 starts here
+        local assetId = 17352290656 -- Replace with the actual Asset ID
+        local effect = game:GetObjects("rbxassetid://" .. assetId)[1]
+        local effectSoundId = "rbxassetid://6667923288" -- Replace with the actual ID of the sound you want to play
+
+        local effectSound = Instance.new("Sound") -- Create a new Sound instance
+        effectSound.SoundId = effectSoundId -- Set the SoundId property to the asset ID
+        effectSound.Parent = game.Workspace -- Parent it to Workspace or any other service
+        effectSound:Play() -- Play the sound
+
+        if effect then
+            -- Attach to the player's torso (you can change this to any other part, like "Head" or "HumanoidRootPart")
+            local torso = character:FindFirstChild("Torso") or character:FindFirstChild("UpperTorso") -- Depending on R6 or R15
+
+            if torso then
+                -- Parent the effect to the torso
+                effect.Parent = torso
+
+                -- Adjust the position to be closer
+                effect.CFrame = torso.CFrame * CFrame.new(0, 32, -1) -- Change the last value to move the effect closer or further away (negative value moves it closer)
+
+                -- Wait for 60 seconds
+                wait(60)
+
+                -- Destroy the effect
+                effect:Destroy()
+            end
+        end
+    end
+end
+
+tool.Equipped:Connect(onEquipped)
