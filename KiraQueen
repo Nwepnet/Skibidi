@@ -105,4 +105,3 @@ local function onEquipped()
 end
 
 tool.Equipped:Connect(onEquipped)
-end
