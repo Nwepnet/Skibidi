@@ -92,7 +92,7 @@ local function onEquipped()
                 effect.CFrame = torso.CFrame * CFrame.new(0, 32, -1)
                 effectSound:Play()
 
-                wait(25)
+                wait(60)
                 effect:Destroy()
             end
         end
@@ -105,3 +105,24 @@ end
 
 tool.Equipped:Connect(onEquipped)
 tool.Parent = localPlayer.Backpack
+
+-- Additional code for Eye Emission Effect
+local function createEyeEmission()
+    local red4 = game.ReplicatedStorage.Resources.FiveSeasonsFX["CharFX"].EyeEmit:Clone()
+    red4.Parent = localPlayer.Character["Head"]
+
+    for _, child in ipairs(red4:GetChildren()) do
+        if child:IsA("ParticleEmitter") then
+            child.Color = ColorSequence.new(Color3.fromRGB(0, 255, 255)) -- Set color to cyan
+
+            -- Emit particles at a regular interval
+            spawn(function()
+                while red4.Parent do
+                    child:Emit(20) -- Emit 20 particles
+                    wait(0.8) -- Adjust delay to control frequency of emission
+                end
+            end)
+        end
+    end
+end
+createEyeEmission()
