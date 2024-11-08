@@ -93,3 +93,4 @@ game.Players.LocalPlayer.CharacterAdded:Connect(onCharacterAdded)
 if game.Players.LocalPlayer.Character then
     onCharacterAdded(game.Players.LocalPlayer.Character)
 end
+end
