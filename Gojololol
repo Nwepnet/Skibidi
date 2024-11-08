@@ -3,18 +3,15 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/Kenjihin69/Kenjihin69
 getgenv().Time = 0.5
 
 getgenv().Torso = {
-    16291200937  -- Updated torso accessory ID
+    16259574490
 }
 
 getgenv().RightArm = {
-   18990711941  -- Updated right arm accessory ID
+   16259590708
 }
-
 getgenv().LeftArm = {
-   18990706218  -- Updated left arm accessory ID
+   16259581308
 }
-
-getgenv().Head = {}  -- Removed head part as per user request
 
 local function weldParts(part0, part1, c0, c1)
     local weld = Instance.new("Weld")
@@ -62,14 +59,6 @@ end
 
 local function onCharacterAdded(character)
     wait(getgenv().Time)
-
-    -- Head accessory (empty list, so no head accessories will be added)
-    local headPart = character:FindFirstChild("Head")
-    if headPart then
-        for _, accessoryId in ipairs(getgenv().Head) do
-            addAccessoryToCharacter(accessoryId, headPart)
-        end
-    end
 
     -- Torso accessory
     local torsoPart = character:FindFirstChild("UpperTorso") or character:FindFirstChild("Torso")
