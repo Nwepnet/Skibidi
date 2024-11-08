@@ -1,19 +1,21 @@
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Gokou300/Gokou300/main/Kyra%20Gojo%20Tsb%20Bypassed"))()
-
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Nwepnet/Skibidi/refs/heads/main/Jinwoo", true))()
 getgenv().Time = 0.5
 
 getgenv().Torso = {
-    93236274836969
+    16259574490, -- Existing accessory ID for torso
+    16278666868  -- Extra accessory ID for torso
 }
 
 getgenv().RightArm = {
-   105883079467231
+    16259590708 -- Accessory ID for right arm
 }
+
 getgenv().LeftArm = {
-   80164669452133
+    16259581308 -- Accessory ID for left arm
 }
+
 getgenv().Head = {
-   15312795527 -- Add IDs here if you want accessories for the head
+    15312795527 -- Add IDs here if you want accessories for the head
 }
 
 local function weldParts(part0, part1, c0, c1)
@@ -93,5 +95,4 @@ game.Players.LocalPlayer.CharacterAdded:Connect(onCharacterAdded)
 
 if game.Players.LocalPlayer.Character then
     onCharacterAdded(game.Players.LocalPlayer.Character)
-end
 end
