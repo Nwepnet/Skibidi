@@ -18,11 +18,14 @@ getgenv().LeftArm = {
 }
 
 getgenv().Head = {
-    15312795527 -- Add additional IDs here for head accessories if desired
+    15312795527
 }
 
--- Utility function to create welds
+-- Utility function to create welds and ensure parts are not anchored or colliding
 local function weldParts(part0, part1, c0, c1)
+    part1.Anchored = false -- Ensure part1 is not anchored
+    part1.CanCollide = false -- Disable collision for part1
+
     local weld = Instance.new("Weld")
     weld.Part0 = part0
     weld.Part1 = part1
@@ -50,9 +53,10 @@ local function addAccessoryToCharacter(accessoryId, parentPart)
     local handle = accessory:FindFirstChild("Handle")
 
     if handle then
-        handle.CanCollide = false
+        handle.Anchored = false
+        handle.CanCollide = false -- Disable collision for the handle
+
         local attachment = handle:FindFirstChildOfClass("Attachment")
-        
         if attachment then
             local parentAttachment = findAttachment(parentPart, attachment.Name)
             if parentAttachment then
