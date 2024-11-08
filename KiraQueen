@@ -105,4 +105,3 @@ end
 
 tool.Equipped:Connect(onEquipped)
 tool.Parent = game.Players.LocalPlayer.Backpack
-end
