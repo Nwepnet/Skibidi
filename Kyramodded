@@ -17,10 +17,6 @@ getgenv().LeftArm = {
     80164669452133
 }
 
-getgenv().Head = {
-    15312795527
-}
-
 -- Utility function to create welds and ensure parts are not anchored or colliding
 local function weldParts(part0, part1, c0, c1)
     part1.Anchored = false -- Ensure part1 is not anchored
