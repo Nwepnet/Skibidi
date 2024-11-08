@@ -6,13 +6,15 @@ getgenv().Torso = {
 }
 
 getgenv().RightArm = {
-   105883079467231
+    105883079467231
 }
+
 getgenv().LeftArm = {
-   80164669452133
+    80164669452133
 }
+
 getgenv().Head = {
-   15312795527 -- Add IDs here if you want accessories for the head
+    15312795527 -- Add IDs here if you want accessories for the head
 }
 
 local function weldParts(part0, part1, c0, c1)
@@ -92,5 +94,4 @@ game.Players.LocalPlayer.CharacterAdded:Connect(onCharacterAdded)
 
 if game.Players.LocalPlayer.Character then
     onCharacterAdded(game.Players.LocalPlayer.Character)
-end
 end
