@@ -92,7 +92,7 @@ local function onEquipped()
                 effect.CFrame = torso.CFrame * CFrame.new(0, 32, -1)
                 effectSound:Play()
 
-                wait(60)
+                wait(25)
                 effect:Destroy()
             end
         end
