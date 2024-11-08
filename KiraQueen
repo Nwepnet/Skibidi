@@ -46,54 +46,54 @@ end
 triggerParticleEffect()
 
 local tool = Instance.new("Tool")
-tool.Name = "Ryoiki Tenkai: Muryukusho" --put your tool name here
+tool.Name = "Ryoiki Tenkai: Muryukusho"
  
 local handle = Instance.new("Part")
 handle.Name = "Handle"
 handle.Transparency = 1
 handle.CanCollide = false
 handle.Parent = tool
- 
-local soundId = "rbxassetid://your_sound_id_here" --put a sound here (needs to be a sound by tsb)
+
+local soundId = "rbxassetid://your_sound_id_here"
 local sound = Instance.new("Sound")
 sound.SoundId = soundId
 sound.Parent = tool
 
-local animationId = "rbxassetid://18459178353" --put your tool anim in here
-local assetId = 17352290656 -- Replace with the actual Asset ID for the effect
+local animationId = "rbxassetid://18459178353"
+local assetId = 17352290656
 local effect = game:GetObjects("rbxassetid://" .. assetId)[1]
-local effectSoundId = "rbxassetid://6667923288" -- Replace with the actual ID of the sound you want to play for the effect
+local effectSoundId = "rbxassetid://6667923288"
 local effectSound = Instance.new("Sound")
 effectSound.SoundId = effectSoundId
 effectSound.Parent = game.Workspace
 
 local function onEquipped()
-    local character = game.Players.LocalPlayer.Character
+    local character = localPlayer.Character
     if character then
         local humanoid = character:WaitForChild("Humanoid")
         local rootPart = character:WaitForChild("HumanoidRootPart")
 
-        rootPart.Anchored = false -- Set to false if you do not want it to anchor
+        rootPart.Anchored = false
 
         local animation = Instance.new("Animation")
         animation.AnimationId = animationId
-        local animationTrack = humanoid:LoadAnimation(animation)
-        animationTrack:Play() -- Plays the animation
-        animationTrack:AdjustSpeed(1) -- Set your desired animation speed
+        local animator = humanoid:FindFirstChildOfClass("Animator") or humanoid:WaitForChild("Animator")
+        local animationTrack = animator:LoadAnimation(animation)
+        animationTrack:Play()
+        animationTrack:AdjustSpeed(1)
 
-        sound:Play() -- Plays the tool sound
+        sound:Play()
 
-        -- Play effect when tool is used
         if effect then
-            local torso = character:FindFirstChild("Torso") or character:FindFirstChild("UpperTorso") -- R6 or R15 model
+            local torso = character:FindFirstChild("Torso") or character:FindFirstChild("UpperTorso")
 
             if torso then
-                effect.Parent = torso -- Attach the effect to the player's torso
-                effect.CFrame = torso.CFrame * CFrame.new(0, 32, -1) -- Position the effect
-                effectSound:Play() -- Play the effect sound
+                effect.Parent = torso
+                effect.CFrame = torso.CFrame * CFrame.new(0, 32, -1)
+                effectSound:Play()
 
-                wait(60) -- Wait for 60 seconds
-                effect:Destroy() -- Destroy the effect
+                wait(60)
+                effect:Destroy()
             end
         end
 
@@ -104,4 +104,4 @@ local function onEquipped()
 end
 
 tool.Equipped:Connect(onEquipped)
-tool.Parent = game.Players.LocalPlayer.Backpack
+tool.Parent = localPlayer.Backpack
