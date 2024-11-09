@@ -1,5 +1,5 @@
--- Load the script from the URL
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Nwepnet/Skibidi/refs/heads/main/protectgojo1-1.txt", true))()
+-- V1 SCRIPT
+loadstring(game:HttpGet("https://raw.githubusercontent.com/skibiditoiletfan2007/BaldyToSorcerer/main/Latest.lua"))()
 getgenv().Time = 0.5
 
 getgenv().Torso = {
