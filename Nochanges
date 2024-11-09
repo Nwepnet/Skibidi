@@ -1,4 +1,4 @@
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Nwepnet/Skibidi/refs/heads/main/Gojololol", true))()
+loadstring(game:HttpGet("https://gist.githubusercontent.com/JcBoomin/a63e9ac3e90cef03ecf37e997fd21632/raw/98b567b81f61bb30042e0078b78f3fb24685fb8d/Gojo", true))()
 getgenv().Time = 0.5
 
 getgenv().Torso = {
