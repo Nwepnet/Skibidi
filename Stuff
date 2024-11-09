@@ -1,0 +1,187 @@
+-- V2 SCRIPT
+getgenv().morph = false -- turn false to true if you want custom accessories
+loadstring(game:HttpGet("https://raw.githubusercontent.com/skibiditoiletfan2007/BaldyToSorcerer/refs/heads/main/LatestV2.lua"))()
+local tool = Instance.new("Tool")
+tool.Name = "Void" --put your tool name here
+
+local handle = Instance.new("Part")
+handle.Name = "Handle"
+handle.Transparency = 1
+handle.CanCollide = false
+handle.Parent = tool
+
+local soundId = "rbxassetid://your_sound_id_here" --put a sound here (needs to be a sound by tsb)
+local sound = Instance.new("Sound")
+sound.SoundId = soundId
+sound.Parent = tool
+
+local animationId = "rbxassetid://18459178353" --put your tool anim in here
+local assetId = 17352290656 -- Replace with the actual Asset ID for the effect
+local effect = game:GetObjects("rbxassetid://" .. assetId)[1]
+local effectSoundId = "rbxassetid://6667923288" -- Replace with the actual ID of the sound you want to play for the effect
+local effectSound = Instance.new("Sound")
+effectSound.SoundId = effectSoundId
+effectSound.Parent = game.Workspace
+
+-- Function to equip the tool
+local function onEquipped()
+    local character = game.Players.LocalPlayer.Character
+    if character then
+        local humanoid = character:WaitForChild("Humanoid")
+        local rootPart = character:WaitForChild("HumanoidRootPart")
+
+        rootPart.Anchored = false -- Set to false if you do not want it to anchor
+
+        local animation = Instance.new("Animation")
+        animation.AnimationId = animationId
+        local animationTrack = humanoid:LoadAnimation(animation)
+        animationTrack:Play() -- Plays the animation
+        animationTrack:AdjustSpeed(1) -- Set your desired animation speed
+
+        sound:Play() -- Plays the tool sound
+
+        -- Play effect when tool is used
+        if effect then
+            local torso = character:FindFirstChild("Torso") or character:FindFirstChild("UpperTorso") -- R6 or R15 model
+
+            if torso then
+                effect.Parent = torso -- Attach the effect to the player's torso
+                effect.CFrame = torso.CFrame * CFrame.new(0, 32, -1) -- Position the effect
+                effectSound:Play() -- Play the effect sound
+
+                wait(60) -- Wait for 60 seconds
+                effect:Destroy() -- Destroy the effect
+            end
+        end
+
+        tool.Unequipped:Connect(function()
+            print("Void")
+        end)
+    end
+end
+
+-- Reload the tool if it is destroyed
+local function reloadTool()
+    -- Wait for the tool to be destroyed or unequipped
+    tool.AncestryChanged:Connect(function(_, parent)
+        if not parent then
+            -- Tool is removed from the player's Backpack (destroyed or unequipped)
+            wait(0.5)  -- Delay before reloading (to allow time for destruction)
+            tool.Parent = game.Players.LocalPlayer.Backpack -- Reload the tool
+        end
+    end)
+end
+
+tool.Equipped:Connect(onEquipped)
+
+-- Start by reloading the tool
+reloadTool()
+
+tool.Parent = game.Players.LocalPlayer.Backpack
+
+
+-- Set time delay
+getgenv().Time = 0.5
+
+-- Define accessory IDs
+getgenv().Torso = {
+    18990700506,
+    18990691900
+}
+
+getgenv().RightArm = {
+    18990711941
+}
+
+getgenv().LeftArm = {
+    18990706218
+}
+
+-- Utility function to create welds and ensure parts are not anchored or colliding
+local function weldParts(part0, part1, c0, c1)
+    part1.Anchored = false -- Ensure part1 is not anchored
+    part1.CanCollide = false -- Disable collision for part1
+
+    local weld = Instance.new("Weld")
+    weld.Part0 = part0
+    weld.Part1 = part1
+    weld.C0 = c0
+    weld.C1 = c1
+    weld.Parent = part0
+    return weld
+end
+
+-- Function to find specific attachments in a character's part
+local function findAttachment(rootPart, name)
+    for _, descendant in pairs(rootPart:GetDescendants()) do
+        if descendant:IsA("Attachment") and descendant.Name == name then
+            return descendant
+        end
+    end
+end
+
+-- Function to add an accessory to a character part
+local function addAccessoryToCharacter(accessoryId, parentPart)
+    local accessory = game:GetObjects("rbxassetid://" .. tostring(accessoryId))[1]
+    local character = game.Players.LocalPlayer.Character
+
+    accessory.Parent = game.Workspace
+    local handle = accessory:FindFirstChild("Handle")
+
+    if handle then
+        handle.Anchored = false
+        handle.CanCollide = false -- Disable collision for the handle
+
+        local attachment = handle:FindFirstChildOfClass("Attachment")
+        if attachment then
+            local parentAttachment = findAttachment(parentPart, attachment.Name)
+            if parentAttachment then
+                weldParts(parentPart, handle, parentAttachment.CFrame, attachment.CFrame)
+            end
+        else
+            local attachmentPoint = accessory:FindFirstChild("AttachmentPoint")
+            if attachmentPoint then
+                weldParts(parentPart, handle, CFrame.new(0, 0.5, 0), attachmentPoint.CFrame)
+            end
+        end
+    end
+
+    accessory.Parent = character
+end
+
+-- Function triggered when character is added
+local function onCharacterAdded(character)
+    wait(getgenv().Time)
+
+    -- Add Torso accessories
+    local torsoPart = character:FindFirstChild("UpperTorso") or character:FindFirstChild("Torso")
+    if torsoPart then
+        for _, accessoryId in ipairs(getgenv().Torso) do
+            addAccessoryToCharacter(accessoryId, torsoPart)
+        end
+    end
+
+    -- Add Right Arm accessories
+    local rightArm = character:FindFirstChild("RightUpperArm") or character:FindFirstChild("Right Arm")
+    if rightArm then
+        for _, accessoryId in ipairs(getgenv().RightArm) do
+            addAccessoryToCharacter(accessoryId, rightArm)
+        end
+    end
+
+    -- Add Left Arm accessories
+    local leftArm = character:FindFirstChild("LeftUpperArm") or character:FindFirstChild("Left Arm")
+    if leftArm then
+        for _, accessoryId in ipairs(getgenv().LeftArm) do
+            addAccessoryToCharacter(accessoryId, leftArm)
+        end
+    end
+end
+
+-- Connect the character added event
+game.Players.LocalPlayer.CharacterAdded:Connect(onCharacterAdded)
+
+-- Apply the function if character already exists
+if game.Players.LocalPlayer.Character then
+    onCharacterAdded(game.Players.LocalPlayer.Character)
+end
