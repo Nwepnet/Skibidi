@@ -3,15 +3,15 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/Nwepnet/Skibidi/refs/
 getgenv().Time = 0.5
 
 getgenv().Torso = {
-    18358049104
+    14445935507
 }
 
 getgenv().RightArm = {
-    18358060720
+    132307742354819
 }
 
 getgenv().LeftArm = {
-    18358152336
+    87409080877566
 }
 
 getgenv().Head = {
