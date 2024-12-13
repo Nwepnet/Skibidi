@@ -249,7 +249,7 @@ local function playAnimationSequence(player)
         animTracks.gojoUlt.TimePosition = "-1"
 
         sendChatMessage("Hamamada!")
-        task.wait(3.5)
+        task.wait(3.8)
         animTracks.gojoUlt:Stop()
         
         -- Reset flag after sequence
