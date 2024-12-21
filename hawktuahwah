@@ -25,7 +25,7 @@ local shadowSwarm1ANIM = ReplicatedStorage.Animations.Choso.WingKing
 
 -- VFX references (add your VFX paths here)
 local VFX_TEMPLATES = {
-    groundWave = game.ReplicatedStorage.Utils.Choso.PlasmaWave.Start,
+    groundWave = game.ReplicatedStorage.Utils.Megumi.Mahoraga.Parry.Scream,
 }
 
 -- Animation storage
@@ -123,7 +123,7 @@ local function playAnimationSequence(player)
         task.wait(0.2)
         playVFX("groundWave", 15)
         
-        task.wait(2)
+        task.wait(0.2)
         loadedAnimations.roughEnergy:Stop()
         loadedAnimations.shadowSwarm1:Play()
         stopVFX("groundWave")
@@ -170,7 +170,7 @@ player.CharacterAdded:Connect(setupCharacter)
 
 -- Animation references
 local crushingBlowANIM = ReplicatedStorage.Animations.Itadori.CrushingBlow
-local roughEnergyANIM = ReplicatedStorage.Animations.Mahito.Ultimate
+local roughEnergyANIM = ReplicatedStorage.Animations.Choso.Melee.Down
 
 -- VFX references (add your VFX paths here)
 local VFX_TEMPLATES = {
