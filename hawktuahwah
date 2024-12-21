@@ -1,0 +1,455 @@
+-- yk the deal bud
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+-- Skill Names
+local skillOne = game.Players.LocalPlayer.PlayerGui.Main.Moveset['Cursed Strikes'].ItemName
+local skillTwo = game.Players.LocalPlayer.PlayerGui.Main.Moveset['Crushing Blow'].ItemName
+local skillThree = game.Players.LocalPlayer.PlayerGui.Main.Moveset['Divergent Fist'].ItemName
+local skillFour = game.Players.LocalPlayer.PlayerGui.Main.Moveset['Manji Kick'].ItemName
+local ultTitle = game.Players.LocalPlayer.PlayerGui.Main.Ultimate.Title
+
+-- Set skill names
+skillOne.Text = "Heian Strikes"
+skillTwo.Text = "Advanced Jujutsu"
+skillThree.Text = "Kokusen"
+skillFour.Text = "Manji Kick"
+ultTitle.Text = "Ultimate"
+
+-- Skill 1 --
+
+-- Animation references
+local cursedStrikeANIM = ReplicatedStorage.Animations.Itadori.CursedStrike
+local roughEnergyANIM = ReplicatedStorage.Animations.Hakari.RoughEnergy
+local shadowSwarm1ANIM = ReplicatedStorage.Animations.Choso.WingKing
+
+-- VFX references (add your VFX paths here)
+local VFX_TEMPLATES = {
+    groundWave = game.ReplicatedStorage.Utils.Choso.PlasmaWave.Start,
+}
+
+-- Animation storage
+local loadedAnimations = {}
+local activeVFX = {}
+
+-- Prevent multiple triggers
+local isAnimationSequenceActive = false
+
+-- Function to create VFX
+local function createVFX(vfxName, character)
+    if not VFX_TEMPLATES[vfxName] then
+        warn("VFX template not found:", vfxName)
+        return nil
+    end
+    
+    local hrp = character:WaitForChild("HumanoidRootPart")
+    local vfx = VFX_TEMPLATES[vfxName]:Clone()
+    vfx.Parent = hrp
+    activeVFX[vfxName] = vfx
+    
+    return vfx
+end
+
+-- Function to play VFX
+local function playVFX(vfxName, particleAmount)
+    local vfx = activeVFX[vfxName]
+    if not vfx then return end
+    
+    for _, child in ipairs(vfx:GetChildren()) do
+        if child:IsA("ParticleEmitter") then
+            child:Emit(particleAmount or 15)
+            child.Enabled = true
+        end
+    end
+end
+
+-- Function to stop VFX
+local function stopVFX(vfxName)
+    local vfx = activeVFX[vfxName]
+    if not vfx then return end
+    
+    for _, child in ipairs(vfx:GetChildren()) do
+        if child:IsA("ParticleEmitter") then
+            child.Enabled = false
+        end
+    end
+end
+
+-- Function to cleanup VFX
+local function cleanupVFX(vfxName)
+    local vfx = activeVFX[vfxName]
+    if vfx then
+        vfx:Destroy()
+        activeVFX[vfxName] = nil
+    end
+end
+
+-- Function to load animation
+local function loadAnimation(animId, character)
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    if not humanoid then return nil end
+    
+    local animation = Instance.new("Animation")
+    animation.AnimationId = animId
+    
+    return humanoid:LoadAnimation(animation)
+end
+
+-- Function to play animation sequence
+local function playAnimationSequence(player)
+    if isAnimationSequenceActive then return end
+    isAnimationSequenceActive = true
+    
+    local character = player.Character
+    if not character then return end
+    
+    -- Load animations if not already loaded
+    if not loadedAnimations.roughEnergy then
+        loadedAnimations.roughEnergy = loadAnimation(roughEnergyANIM.AnimationId, character)
+        loadedAnimations.shadowSwarm1 = loadAnimation(shadowSwarm1ANIM.AnimationId, character)
+    end
+    
+    -- Stop any existing animations
+    for _, track in pairs(character:FindFirstChildOfClass("Humanoid"):GetPlayingAnimationTracks()) do
+        track:Stop()
+    end
+    
+    -- Create VFX instances
+    createVFX("groundWave", character)
+    
+    -- Custom sequence
+    task.spawn(function()
+        loadedAnimations.roughEnergy:Play()
+        task.wait(0.2)
+        playVFX("groundWave", 15)
+        
+        task.wait(0.5)
+        loadedAnimations.roughEnergy:Stop()
+        loadedAnimations.shadowSwarm1:Play()
+        stopVFX("groundWave")
+        
+        task.wait(2)
+        loadedAnimations.shadowSwarm1:Stop()
+
+        -- Cleanup
+        task.wait(0.5)
+        cleanupVFX("groundWave")
+        
+        isAnimationSequenceActive = false
+    end)
+end
+
+-- Event handler for animation played
+local function onAnimationPlayed(animationTrack)
+    if animationTrack.Animation.AnimationId == cursedStrikeANIM.AnimationId then
+        playAnimationSequence(Players.LocalPlayer)
+    end
+end
+
+-- Set up character connections
+local function setupCharacter(character)
+    -- Clear old animations
+    loadedAnimations = {}
+    
+    -- Clear old VFX
+    for name, vfx in pairs(activeVFX) do
+        vfx:Destroy()
+    end
+    activeVFX = {}
+    
+    local humanoid = character:WaitForChild("Humanoid")
+    humanoid.AnimationPlayed:Connect(onAnimationPlayed)
+end
+
+-- Connect to local player's character
+local player = Players.LocalPlayer
+setupCharacter(player.Character or player.CharacterAdded:Wait())
+player.CharacterAdded:Connect(setupCharacter)
+
+-- Skill 2 --
+
+-- Animation references
+local crushingBlowANIM = ReplicatedStorage.Animations.Itadori.CrushingBlow
+local roughEnergyANIM = ReplicatedStorage.Animations.Mahito.Ultimate
+
+-- VFX references (add your VFX paths here)
+local VFX_TEMPLATES = {
+    groundWave = game.ReplicatedStorage.Utils.Mahito.Worms.WormLaunch.groundwaveing,
+}
+
+-- Animation storage
+local loadedAnimations = {}
+local activeVFX = {}
+
+-- Prevent multiple triggers
+local isAnimationSequenceActive = false
+
+-- Function to create VFX
+local function createVFX(vfxName, character)
+    if not VFX_TEMPLATES[vfxName] then
+        warn("VFX template not found:", vfxName)
+        return nil
+    end
+    
+    local hrp = character:WaitForChild("HumanoidRootPart")
+    local vfx = VFX_TEMPLATES[vfxName]:Clone()
+    vfx.Parent = hrp
+    activeVFX[vfxName] = vfx
+    
+    return vfx
+end
+
+-- Function to play VFX
+local function playVFX(vfxName, particleAmount)
+    local vfx = activeVFX[vfxName]
+    if not vfx then return end
+    
+    for _, child in ipairs(vfx:GetChildren()) do
+        if child:IsA("ParticleEmitter") then
+            child:Emit(particleAmount or 15)
+            child.Enabled = true
+        end
+    end
+end
+
+-- Function to stop VFX
+local function stopVFX(vfxName)
+    local vfx = activeVFX[vfxName]
+    if not vfx then return end
+    
+    for _, child in ipairs(vfx:GetChildren()) do
+        if child:IsA("ParticleEmitter") then
+            child.Enabled = false
+        end
+    end
+end
+
+-- Function to cleanup VFX
+local function cleanupVFX(vfxName)
+    local vfx = activeVFX[vfxName]
+    if vfx then
+        vfx:Destroy()
+        activeVFX[vfxName] = nil
+    end
+end
+
+-- Function to load animation
+local function loadAnimation(animId, character)
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    if not humanoid then return nil end
+    
+    local animation = Instance.new("Animation")
+    animation.AnimationId = animId
+    
+    return humanoid:LoadAnimation(animation)
+end
+
+-- Function to play animation sequence
+local function playAnimationSequence(player)
+    if isAnimationSequenceActive then return end
+    isAnimationSequenceActive = true
+    
+    local character = player.Character
+    if not character then return end
+    
+    -- Load animations if not already loaded
+    if not loadedAnimations.roughEnergy then
+        loadedAnimations.roughEnergy = loadAnimation(roughEnergyANIM.AnimationId, character)
+    end
+    
+    -- Stop any existing animations
+    for _, track in pairs(character:FindFirstChildOfClass("Humanoid"):GetPlayingAnimationTracks()) do
+        track:Stop()
+    end
+    
+    -- Create VFX instances
+    createVFX("groundWave", character)
+    
+    -- Custom sequence
+    task.spawn(function()
+        loadedAnimations.roughEnergy:Play()
+        task.wait(0.2)
+        playVFX("groundWave", 15)
+        
+        task.wait(0.5)
+        loadedAnimations.roughEnergy:Stop()
+        stopVFX("groundWave")
+        
+        -- Cleanup
+        task.wait(0.5)
+        cleanupVFX("groundWave")
+        
+        isAnimationSequenceActive = false
+    end)
+end
+
+-- Event handler for animation played
+local function onAnimationPlayed(animationTrack)
+    if animationTrack.Animation.AnimationId == crushingBlowANIM.AnimationId then
+        playAnimationSequence(Players.LocalPlayer)
+    end
+end
+
+-- Set up character connections
+local function setupCharacter(character)
+    -- Clear old animations
+    loadedAnimations = {}
+    
+    -- Clear old VFX
+    for name, vfx in pairs(activeVFX) do
+        vfx:Destroy()
+    end
+    activeVFX = {}
+    
+    local humanoid = character:WaitForChild("Humanoid")
+    humanoid.AnimationPlayed:Connect(onAnimationPlayed)
+end
+
+-- Connect to local player's character
+local player = Players.LocalPlayer
+setupCharacter(player.Character or player.CharacterAdded:Wait())
+player.CharacterAdded:Connect(setupCharacter)
+
+-- Skill 3 --
+
+-- Animation references
+local divergentFist1 = ReplicatedStorage.Animations.Itadori.Variants.DivergentFist1
+local roughEnergyANIM = ReplicatedStorage.Animations.Mahito.FocusStrike
+
+-- VFX references (add your VFX paths here)
+local VFX_TEMPLATES = {
+    groundWave = game.ReplicatedStorage.Utils.Gojo.LapseBlue.Infinity.Attachment,
+}
+
+-- Animation storage
+local loadedAnimations = {}
+local activeVFX = {}
+
+-- Prevent multiple triggers
+local isAnimationSequenceActive = false
+
+-- Function to create VFX
+local function createVFX(vfxName, character)
+    if not VFX_TEMPLATES[vfxName] then
+        warn("VFX template not found:", vfxName)
+        return nil
+    end
+    
+    local hrp = character:WaitForChild("HumanoidRootPart")
+    local vfx = VFX_TEMPLATES[vfxName]:Clone()
+    vfx.Parent = hrp
+    activeVFX[vfxName] = vfx
+    
+    return vfx
+end
+
+-- Function to play VFX
+local function playVFX(vfxName, particleAmount)
+    local vfx = activeVFX[vfxName]
+    if not vfx then return end
+    
+    for _, child in ipairs(vfx:GetChildren()) do
+        if child:IsA("ParticleEmitter") then
+            child:Emit(particleAmount or 15)
+            child.Enabled = true
+        end
+    end
+end
+
+-- Function to stop VFX
+local function stopVFX(vfxName)
+    local vfx = activeVFX[vfxName]
+    if not vfx then return end
+    
+    for _, child in ipairs(vfx:GetChildren()) do
+        if child:IsA("ParticleEmitter") then
+            child.Enabled = false
+        end
+    end
+end
+
+-- Function to cleanup VFX
+local function cleanupVFX(vfxName)
+    local vfx = activeVFX[vfxName]
+    if vfx then
+        vfx:Destroy()
+        activeVFX[vfxName] = nil
+    end
+end
+
+-- Function to load animation
+local function loadAnimation(animId, character)
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    if not humanoid then return nil end
+    
+    local animation = Instance.new("Animation")
+    animation.AnimationId = animId
+    
+    return humanoid:LoadAnimation(animation)
+end
+
+-- Function to play animation sequence
+local function playAnimationSequence(player)
+    if isAnimationSequenceActive then return end
+    isAnimationSequenceActive = true
+    
+    local character = player.Character
+    if not character then return end
+    
+    -- Load animations if not already loaded
+    if not loadedAnimations.roughEnergy then
+        loadedAnimations.roughEnergy = loadAnimation(roughEnergyANIM.AnimationId, character)
+    end
+    
+    -- Stop any existing animations
+    for _, track in pairs(character:FindFirstChildOfClass("Humanoid"):GetPlayingAnimationTracks()) do
+        track:Stop()
+    end
+    
+    -- Create VFX instances
+    createVFX("groundWave", character)
+    
+    -- Custom sequence
+    task.spawn(function()
+        loadedAnimations.roughEnergy:Play()
+        task.wait(0.2)
+        playVFX("groundWave", 15)
+        
+        task.wait(0.5)
+        loadedAnimations.roughEnergy:Stop()
+        stopVFX("groundWave")
+        
+        -- Cleanup
+        task.wait(0.5)
+        cleanupVFX("groundWave")
+        
+        isAnimationSequenceActive = false
+    end)
+end
+
+-- Event handler for animation played
+local function onAnimationPlayed(animationTrack)
+    if animationTrack.Animation.AnimationId == divergentFist1.AnimationId then
+        playAnimationSequence(Players.LocalPlayer)
+    end
+end
+
+-- Set up character connections
+local function setupCharacter(character)
+    -- Clear old animations
+    loadedAnimations = {}
+    
+    -- Clear old VFX
+    for name, vfx in pairs(activeVFX) do
+        vfx:Destroy()
+    end
+    activeVFX = {}
+    
+    local humanoid = character:WaitForChild("Humanoid")
+    humanoid.AnimationPlayed:Connect(onAnimationPlayed)
+end
+
+-- Connect to local player's character
+local player = Players.LocalPlayer
+setupCharacter(player.Character or player.CharacterAdded:Wait())
+player.CharacterAdded:Connect(setupCharacter)
