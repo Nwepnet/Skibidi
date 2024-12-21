@@ -14,7 +14,7 @@ skillOne.Text = "Heian Strikes"
 skillTwo.Text = "Advanced Jujutsu"
 skillThree.Text = "Kokusen"
 skillFour.Text = "Manji Kick"
-ultTitle.Text = "Ultimate"
+ultTitle.Text = "No Ultimate"
 
 -- Skill 1 --
 
