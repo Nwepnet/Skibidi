@@ -123,7 +123,7 @@ local function playAnimationSequence(player)
         task.wait(0.2)
         playVFX("groundWave", 15)
         
-        task.wait(0.5)
+        task.wait(2)
         loadedAnimations.roughEnergy:Stop()
         loadedAnimations.shadowSwarm1:Play()
         stopVFX("groundWave")
