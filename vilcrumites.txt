@@ -1,20 +1,20 @@
--- LocalScript - Put inside StarterPlayerScripts or StarterPack
-
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 
 local player = Players.LocalPlayer
-local camera = workspace.CurrentCamera
-local character = player.Character or player.CharacterAdded:Wait()
-local humanoid = character:WaitForChild("Humanoid")
-local root = character:WaitForChild("HumanoidRootPart")
+local mouse = player:GetMouse()
 
--- Create the tool
-local tool = Instance.new("Tool")
-tool.Name = "Viltrum's Flight"
-tool.RequiresHandle = false
-tool.Parent = player:WaitForChild("Backpack")
+-- Wait for character
+local function waitForCharacter()
+	player.Character = player.Character or player.CharacterAdded:Wait()
+	local character = player.Character
+	local humanoid = character:WaitForChild("Humanoid")
+	local hrp = character:WaitForChild("HumanoidRootPart")
+	return character, humanoid, hrp
+end
+
+local character, humanoid, hrp = waitForCharacter()
 
 -- Animations
 local idleAnim = Instance.new("Animation")
@@ -23,108 +23,104 @@ idleAnim.AnimationId = "rbxassetid://97172005"
 local flyAnim = Instance.new("Animation")
 flyAnim.AnimationId = "rbxassetid://90872539"
 
-local idleTrack
-local flyTrack
+local idleTrack = humanoid:LoadAnimation(idleAnim)
+local flyTrack = humanoid:LoadAnimation(flyAnim)
 
--- Flight state
+-- Settings
 local flying = false
-local speed = 0
-local maxSpeed = 150
-local t = 0
+local currentSpeed = 0
+local maxSpeed = 100
+local acceleration = 3.5
+local deceleration = 4
+local moveVector = Vector3.zero
 
-local function easing(t)
-	return 1 - math.exp(-2.5 * t)
+-- Create Tool
+local tool = Instance.new("Tool")
+tool.Name = "Viltrum's Flight"
+tool.RequiresHandle = false
+tool.Parent = player:WaitForChild("Backpack")
+
+-- Get move direction (mobile and PC)
+local function getMoveVector()
+	return humanoid.MoveDirection
 end
 
-local function getFlatLookVector()
-	local look = camera.CFrame.LookVector
-	return Vector3.new(look.X, 0, look.Z).Unit
-end
-
--- Real horizontal alignment
-local function getHorizontalCFrame()
-	local flatLook = getFlatLookVector()
-	local up = Vector3.new(0, 1, 0)
-	local camRight = flatLook:Cross(up)
-	local horizontalCF = CFrame.fromMatrix(root.Position, flatLook, up) * CFrame.Angles(0, 0, math.rad(-180))
-	return horizontalCF
-end
-
-local function getUprightCFrame()
-	local flatLook = getFlatLookVector()
-	return CFrame.lookAt(root.Position, root.Position + flatLook)
-end
-
+-- Start Flight
 local function startFlight()
+	if flying then return end
 	flying = true
-	t = 0
-	speed = 0
+	currentSpeed = 0
 	humanoid.AutoRotate = false
-	UserInputService.MouseBehavior = Enum.MouseBehavior.LockCenter
-
-	-- Play animations
-	idleTrack = humanoid:LoadAnimation(idleAnim)
-	flyTrack = humanoid:LoadAnimation(flyAnim)
+	humanoid:ChangeState(Enum.HumanoidStateType.Physics)
 	idleTrack:Play()
-
-	-- Enable full control
-	RunService:BindToRenderStep("ViltrumFlight", Enum.RenderPriority.Character.Value + 1, function(dt)
-		local moveDir = humanoid.MoveDirection
-		local lookDir = camera.CFrame.LookVector
-
-		-- Flight acceleration
-		if moveDir.Magnitude > 0 then
-			t = math.clamp(t + dt, 0, 1)
-			speed = easing(t) * maxSpeed
-		else
-			t = 0
-			speed = 0
-		end
-
-		-- Direction vector (from camera)
-		local direction = lookDir.Unit * speed
-		root.AssemblyLinearVelocity = direction
-
-		-- Orientation control
-		if moveDir.Magnitude > 0 then
-			root.CFrame = root.CFrame:Lerp(getHorizontalCFrame(), 0.25)
-		else
-			root.CFrame = root.CFrame:Lerp(getUprightCFrame(), 0.2)
-		end
-	end)
-
-	-- Animation switching
-	RunService:BindToRenderStep("ViltrumAnimSync", Enum.RenderPriority.Last.Value, function()
-		if humanoid.MoveDirection.Magnitude > 0 then
-			if idleTrack and idleTrack.IsPlaying then idleTrack:Stop() end
-			if flyTrack and not flyTrack.IsPlaying then flyTrack:Play() end
-		else
-			if flyTrack and flyTrack.IsPlaying then flyTrack:Stop() end
-			if idleTrack and not idleTrack.IsPlaying then idleTrack:Play() end
-		end
-	end)
 end
 
+-- Stop Flight
 local function stopFlight()
+	if not flying then return end
 	flying = false
-	speed = 0
-	t = 0
+	currentSpeed = 0
 	humanoid.AutoRotate = true
-	UserInputService.MouseBehavior = Enum.MouseBehavior.Default
-
-	if idleTrack then idleTrack:Stop() end
-	if flyTrack then flyTrack:Stop() end
-
-	RunService:UnbindFromRenderStep("ViltrumFlight")
-	RunService:UnbindFromRenderStep("ViltrumAnimSync")
-
-	root.AssemblyLinearVelocity = Vector3.zero
+	humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
+	idleTrack:Stop()
+	flyTrack:Stop()
+	hrp.Velocity = Vector3.zero
 end
 
-tool.Activated:Connect(function()
+-- Toggle Flight
+local function toggleFlight()
 	if flying then
 		stopFlight()
 	else
 		startFlight()
 	end
+end
+
+-- Activate tool = toggle flight
+tool.Activated:Connect(toggleFlight)
+tool.Unequipped:Connect(stopFlight)
+
+-- Flight logic
+RunService.RenderStepped:Connect(function(dt)
+	if not flying or not character or not character.Parent then return end
+
+	moveVector = getMoveVector()
+	local moving = moveVector.Magnitude > 0.1
+
+	if moving then
+		if not flyTrack.IsPlaying then
+			idleTrack:Stop()
+			flyTrack:Play()
+		end
+		currentSpeed = math.min(currentSpeed + acceleration, maxSpeed)
+	else
+		if not idleTrack.IsPlaying then
+			flyTrack:Stop()
+			idleTrack:Play()
+		end
+		currentSpeed = math.max(currentSpeed - deceleration, 0)
+	end
+
+	local cam = workspace.CurrentCamera
+	local camLook = cam.CFrame.LookVector
+
+	-- Force direction horizontal
+	local horizontalDirection = Vector3.new(camLook.X, camLook.Y, camLook.Z).Unit
+	local velocity = horizontalDirection * currentSpeed
+	hrp.Velocity = velocity
+
+	-- Make player flat to camera direction (horizontal only)
+	local flatLook = cam.CFrame.LookVector.Unit
+	local right = cam.CFrame.RightVector
+	local flatUp = right:Cross(flatLook).Unit
+
+	hrp.CFrame = CFrame.fromMatrix(hrp.Position, flatLook, flatUp)
+end)
+
+-- Reconnect when character dies
+player.CharacterAdded:Connect(function()
+	character, humanoid, hrp = waitForCharacter()
+	idleTrack = humanoid:LoadAnimation(idleAnim)
+	flyTrack = humanoid:LoadAnimation(flyAnim)
+	flying = false
 end)
